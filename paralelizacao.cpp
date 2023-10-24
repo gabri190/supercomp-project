@@ -9,79 +9,111 @@
 // biblioteca MPI (Message Passing Interface). Cada processador será responsável por encontrar cliques em uma parte do grafo, e 
 // os resultados serão combinados no final para encontrar todas as cliques no grafo.
 //solucao aqui 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <omp.h>
+#include <mpi.h>
+#include "grafo.h"
+#include <iostream>
+#include <vector>
 
-#define MAX_VERTICES 1000
+std::vector<int> encontrarCliqueMaxima(const std::vector<std::vector<int>>& grafo, int numVertices, int start, int end) {
+    std::vector<int> cliqueMaxima;
+    std::vector<int> candidatos;
 
-int graph[MAX_VERTICES][MAX_VERTICES]; // Matriz de adjacência
-int numVertices; // Número de vértices no grafo
-int maxCliqueSize; // Tamanho máximo da clique
-int clique[MAX_VERTICES]; // Conjunto de vértices na clique máxima
-
-// Função para verificar se um vértice pode ser adicionado à clique atual
-bool isSafe(int v, int clique[], int size) {
-    for (int i = 0; i < size; i++) {
-        if (graph[v][clique[i]])
-            return false;
+    for(int i = start; i < end; ++i) {
+        candidatos.push_back(i);
     }
-    return true;
-}
 
-// Função recursiva para encontrar a clique máxima
-void findMaxClique(int clique[], int size, int v) {
-    if (v == numVertices) {
-        if (size > maxCliqueSize) {
-            maxCliqueSize = size;
-            #pragma omp critical
-            {
-                // Atualizar a clique máxima encontrada
-                for (int i = 0; i < size; i++) {
-                    clique[i] = clique[i];
-                }
+    while(!candidatos.empty()) {
+        int v = candidatos.back();
+        candidatos.pop_back();
+
+        bool podeAdicionar = true;
+
+        for(int u : cliqueMaxima) {
+            if(grafo[u][v] == 0) {
+                podeAdicionar = false;
+                break;
             }
         }
-        return;
-    }
 
-    // Verifique se o vértice pode ser adicionado à clique
-    if (isSafe(v, clique, size)) {
-        // Inclua o vértice na clique e explore recursivamente
-        clique[size] = v;
-        findMaxClique(clique, size + 1, v + 1);
-    }
+        if(podeAdicionar) {
+            cliqueMaxima.push_back(v);
+            std::vector<int> novosCandidatos;
 
-    // Explore recursivamente sem incluir o vértice na clique
-    findMaxClique(clique, size, v + 1);
-}
+            for(int u : candidatos) {
+                bool adjacenteATodos = true;
 
-int main() {
-    // Inicialize seu grafo e outras variáveis aqui
+                for(int c : cliqueMaxima) {
+                    if(grafo[u][c] == 0) {
+                        adjacenteATodos = false;
+                        break;
+                    }
+                }
 
-    // Inicialize o número de threads para OpenMP
-    int numThreads = 4; // Você pode ajustar isso de acordo com o número de núcleos do seu processador
+                if(adjacenteATodos) {
+                    novosCandidatos.push_back(u);
+                }
+            }
 
-    omp_set_num_threads(numThreads);
-
-    maxCliqueSize = 0;
-
-    // Crie uma seção paralela para a busca da clique máxima
-    #pragma omp parallel
-    {
-        int thread_id = omp_get_thread_num();
-        int clique_private[MAX_VERTICES];
-        #pragma omp for
-        for (int i = 0; i < numVertices; i++) {
-            // Cada thread começa a busca da clique a partir de um vértice diferente
-            findMaxClique(clique_private, 0, i);
+            candidatos = novosCandidatos;
         }
     }
 
-    // O máximo clique encontrado estará em 'clique' e seu tamanho em 'maxCliqueSize'
+    return cliqueMaxima;
+}
 
-    // Imprima o resultado aqui
 
+int main(int argc, char* argv[]) {
+    MPI_Init(&argc, &argv);
+
+    int rank, size;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+    int numVertices;
+    std::vector<std::vector<int>> grafo = LerGrafo("grafo.txt", numVertices);
+
+    // Divida o espaço de busca entre os processos.
+    int verticesPorProcesso = numVertices / size;
+    int start = rank * verticesPorProcesso;
+    int end = (rank == size - 1) ? numVertices : start + verticesPorProcesso;
+
+    // Encontre a clique máxima localmente em cada processo.
+    std::vector<int> cliqueMaximaLocal = encontrarCliqueMaxima(grafo, numVertices, start, end);
+
+    // Comunique os tamanhos das cliques máximas locais ao processo 0.
+    int tamanhoCliqueMaximaLocal = cliqueMaximaLocal.size();
+    std::vector<int> tamanhosCliqueMaxima(size);
+    MPI_Gather(&tamanhoCliqueMaximaLocal, 1, MPI_INT, tamanhosCliqueMaxima.data(), 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+    // Determine a clique máxima global no processo 0.
+    if(rank == 0) {
+        int maxIdx = 0;
+        for(int i = 1; i < size; i++) {
+            if(tamanhosCliqueMaxima[i] > tamanhosCliqueMaxima[maxIdx]) {
+                maxIdx = i;
+            }
+        }
+
+        // Se a clique máxima não foi encontrada pelo processo 0, receba-a do processo que a encontrou.
+        if(maxIdx != 0) {
+            cliqueMaximaLocal.resize(tamanhosCliqueMaxima[maxIdx]);
+            MPI_Recv(cliqueMaximaLocal.data(), tamanhosCliqueMaxima[maxIdx], MPI_INT, maxIdx, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        }
+    }
+    // Se um processo diferente do 0 encontrou a clique máxima, envie-a para o processo 0.
+    else if(tamanhoCliqueMaximaLocal == *max_element(tamanhosCliqueMaxima.begin(), tamanhosCliqueMaxima.end())) {
+        MPI_Send(cliqueMaximaLocal.data(), tamanhoCliqueMaximaLocal, MPI_INT, 0, 0, MPI_COMM_WORLD);
+    }
+
+    // O processo 0 imprime a clique máxima global.
+    if(rank == 0) {
+        std::cout << "Clique máxima: ";
+        for(int v : cliqueMaximaLocal) {
+            std::cout << v << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    MPI_Finalize();
     return 0;
 }
