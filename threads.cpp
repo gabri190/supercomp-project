@@ -11,6 +11,7 @@
 #include "grafo.h"
 #include <iostream>
 #include <omp.h>
+#include <chrono>  
 
 std::vector<int> encontrarCliqueMaxima(const std::vector<std::vector<int>>& grafo, int numVertices) {
     std::vector<int> cliqueMaxima;
@@ -70,7 +71,12 @@ int main() {
     int numVertices;
     std::vector<std::vector<int>> grafo = LerGrafo("grafo.txt", numVertices);
 
+    auto start_time = std::chrono::high_resolution_clock::now();
+
     std::vector<int> cliqueMaxima = encontrarCliqueMaxima(grafo, numVertices);
+
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end_time - start_time;
 
     std::cout << "Clique máxima: ";
     for(int v : cliqueMaxima) {
@@ -78,6 +84,7 @@ int main() {
     }
     std::cout << std::endl;
 
+    std::cout << "Tempo de execução: " << elapsed.count() << "s" << std::endl;
+
     return 0;
 }
-

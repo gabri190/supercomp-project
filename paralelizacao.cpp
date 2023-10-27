@@ -4,15 +4,11 @@
 // os resultados serão combinados no final para encontrar todas as cliques no grafo.
 //solucao aqui 
 
-// Paralelização e Distribuição do Processamento com MPI
-// Nesta implementação, você deve dividir o problema em várias partes e distribuí-las para diferentes processadores usando a 
-// biblioteca MPI (Message Passing Interface). Cada processador será responsável por encontrar cliques em uma parte do grafo, e 
-// os resultados serão combinados no final para encontrar todas as cliques no grafo.
-//solucao aqui 
 #include <mpi.h>
 #include "grafo.h"
 #include <iostream>
 #include <vector>
+#include <chrono>
 
 std::vector<int> encontrarCliqueMaxima(const std::vector<std::vector<int>>& grafo, int numVertices, int start, int end) {
     std::vector<int> cliqueMaxima;
@@ -72,20 +68,21 @@ int main(int argc, char* argv[]) {
     int numVertices;
     std::vector<std::vector<int>> grafo = LerGrafo("grafo.txt", numVertices);
 
-    // Divida o espaço de busca entre os processos.
     int verticesPorProcesso = numVertices / size;
     int start = rank * verticesPorProcesso;
     int end = (rank == size - 1) ? numVertices : start + verticesPorProcesso;
+    
+    std::chrono::high_resolution_clock::time_point start_time;
+    if(rank == 0) {
+        start_time = std::chrono::high_resolution_clock::now();
+    }
 
-    // Encontre a clique máxima localmente em cada processo.
     std::vector<int> cliqueMaximaLocal = encontrarCliqueMaxima(grafo, numVertices, start, end);
 
-    // Comunique os tamanhos das cliques máximas locais ao processo 0.
     int tamanhoCliqueMaximaLocal = cliqueMaximaLocal.size();
     std::vector<int> tamanhosCliqueMaxima(size);
     MPI_Gather(&tamanhoCliqueMaximaLocal, 1, MPI_INT, tamanhosCliqueMaxima.data(), 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-    // Determine a clique máxima global no processo 0.
     if(rank == 0) {
         int maxIdx = 0;
         for(int i = 1; i < size; i++) {
@@ -94,24 +91,26 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        // Se a clique máxima não foi encontrada pelo processo 0, receba-a do processo que a encontrou.
         if(maxIdx != 0) {
             cliqueMaximaLocal.resize(tamanhosCliqueMaxima[maxIdx]);
             MPI_Recv(cliqueMaximaLocal.data(), tamanhosCliqueMaxima[maxIdx], MPI_INT, maxIdx, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         }
     }
-    // Se um processo diferente do 0 encontrou a clique máxima, envie-a para o processo 0.
     else if(tamanhoCliqueMaximaLocal == *max_element(tamanhosCliqueMaxima.begin(), tamanhosCliqueMaxima.end())) {
         MPI_Send(cliqueMaximaLocal.data(), tamanhoCliqueMaximaLocal, MPI_INT, 0, 0, MPI_COMM_WORLD);
     }
 
-    // O processo 0 imprime a clique máxima global.
     if(rank == 0) {
+        auto end_time = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> elapsed = end_time - start_time;
+        
         std::cout << "Clique máxima: ";
         for(int v : cliqueMaximaLocal) {
             std::cout << v << " ";
         }
         std::cout << std::endl;
+        
+        std::cout << "Tempo de execução: " << elapsed.count() << "s" << std::endl;
     }
 
     MPI_Finalize();
