@@ -21,44 +21,64 @@ std::vector<int> encontrarCliqueMaxima(const std::vector<std::vector<int>>& graf
         candidatos.push_back(i);
     }
 
+    int exitLoop = 0;
+
     #pragma omp parallel
     {
         #pragma omp single nowait
         {
-            while(!candidatos.empty()) {
-                int v = candidatos.back();
-                candidatos.pop_back();
+            while(!candidatos.empty() && !exitLoop) {
+                int v;
+                #pragma omp critical
+                {
+                    v = candidatos.back();
+                    candidatos.pop_back();
+                }
 
                 bool podeAdicionar = true;
 
-                #pragma omp critical
-                for(int u : cliqueMaxima) {
-                    if(grafo[u][v] == 0) {
-                        podeAdicionar = false;
-                        break;
+                #pragma omp parallel for
+                for(int u = 0; u < cliqueMaxima.size(); ++u) {
+                    if(grafo[cliqueMaxima[u]][v] == 0) {
+                        #pragma omp critical
+                        {
+                            podeAdicionar = false;
+                            exitLoop = 1;  // Set the exitLoop variable to terminate the outer loop
+                        }
                     }
                 }
 
                 if(podeAdicionar) {
-                    cliqueMaxima.push_back(v);
+                    #pragma omp critical
+                    {
+                        cliqueMaxima.push_back(v);
+                    }
+                    
                     std::vector<int> novosCandidatos;
 
-                    for(int u : candidatos) {
+                    #pragma omp parallel for
+                    for(int u = 0; u < candidatos.size(); ++u) {
                         bool adjacenteATodos = true;
 
                         for(int c : cliqueMaxima) {
-                            if(grafo[u][c] == 0) {
+                            if(grafo[candidatos[u]][c] == 0) {
                                 adjacenteATodos = false;
                                 break;
                             }
                         }
 
                         if(adjacenteATodos) {
-                            novosCandidatos.push_back(u);
+                            #pragma omp critical
+                            {
+                                novosCandidatos.push_back(candidatos[u]);
+                            }
                         }
                     }
 
-                    candidatos = novosCandidatos;
+                    #pragma omp critical
+                    {
+                        candidatos = novosCandidatos;
+                    }
                 }
             }
         }

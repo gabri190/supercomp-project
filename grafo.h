@@ -6,3 +6,5 @@
 #include <string>
 
 std::vector<std::vector<int>> LerGrafo(const std::string& nomeArquivo, int& numVertices);
+
+#endif // GRAFO_H
