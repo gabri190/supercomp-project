@@ -112,27 +112,30 @@ Códigos-fonte de apoio
 - compilação
 
 ``` shell
-g++ -o exaustiva exaustiva.cpp
+g++ -o exaustiva exaustiva.cpp grafo.cpp -std=c++11
 
 ```
 - gerando executavel
 ```shell
 
-./busca_exaustiva
+./exaustiva grafo.txt
 ```
+Se quiser pode colocar numeros ao lado do nome exaustiva pra indicar o numero de vertices do grafo
 
 #### threads.cpp
 - compilação
 
 ``` shell
-!g++ -o threads threads.cpp grafo.cpp -fopenmp
+g++ -o threads5 threads.cpp grafo.cpp -fopenmp -O3
 
 ```
 - gerando executavel
 ```shell
 
-./threads
+./threads grafo.txt
 ```
+Se quiser pode colocar numeros ao lado do nome exaustiva pra indicar o numero de vertices do grafo
+
 #### paralelizacao.cpp
 - a compilação e execucao serão feitas no cluster de cada grupo da disciplina
 
