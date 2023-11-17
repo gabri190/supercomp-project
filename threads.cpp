@@ -1,110 +1,128 @@
-// Implementação com Threads OpenMP
-// A implementação de uma solução com OpenMP para encontrar cliques em um grafo usando a heurística gulosa envolve a 
-// paralelização das iterações do algoritmo em diferentes threads. O OpenMP simplifica a criação de threads e a coordenação 
-// entre elas.
-
-// Nessa implementação você deve apresentar o código-fonte modificado, justificar a alteração feita, e mostrar também o 
-// speed up obtido. Faça uso de gráficos e tabelas para mostrar que sua implementação em openMP valeu a pena. Observe que 
-// mesmo assim você não vai conseguir resolver exaustivamente o problema, mas o tamanho do grafo será maior, e o tempo de 
-// processamento para um mesmo tamanho deve ser preferencialmente menor.
-//solucao aqui
-#include "grafo.h"
 #include <iostream>
+#include <vector>
+#include <algorithm>
 #include <omp.h>
-#include <chrono>  
+#include "grafo.h"
 
-std::vector<int> encontrarCliqueMaxima(const std::vector<std::vector<int>>& grafo, int numVertices) {
-    std::vector<int> cliqueMaxima;
-    std::vector<int> candidatos;
+std::vector<std::vector<int>> cliquesMaximaisGlobal;
+std::vector<int> cliqueMaximaGlobal;
+bool stop = false;
 
-    for(int i = 0; i < numVertices; ++i) {
-        candidatos.push_back(i);
+void EncontrarCliqueMaximalRecursivo(int vertice, const std::vector<std::vector<int>>& grafo, std::vector<int>& cliqueAtual) {
+    cliqueAtual.push_back(vertice);
+
+    for (int vizinho : cliqueAtual) {
+        if (grafo[vertice][vizinho] == 0) {
+            return; // Não é um clique válido
+        }
     }
 
-    int exitLoop = 0;
+    std::vector<int> vizinhosNaoClicados;
+    for (int i = 0; i < grafo.size(); ++i) {
+        if (std::find(cliqueAtual.begin(), cliqueAtual.end(), i) == cliqueAtual.end()) {
+            vizinhosNaoClicados.push_back(i);
+        }
+    }
 
-    #pragma omp parallel
+    for (int vizinho : vizinhosNaoClicados) {
+        EncontrarCliqueMaximalRecursivo(vizinho, grafo, cliqueAtual);
+    }
+}
+
+bool ComparaCliques(const std::vector<int>& a, const std::vector<int>& b) {
+    return a.size() < b.size();
+}
+
+void AdicionarCliqueMaximal(const std::vector<int>& cliqueAtual) {
+    #pragma omp critical
     {
-        #pragma omp single nowait
+        bool cliqueExiste = false;
+        for (const auto& clique : cliquesMaximaisGlobal) {
+            if (clique.size() == cliqueAtual.size() && std::is_permutation(cliqueAtual.begin(), cliqueAtual.end(), clique.begin())) {
+                cliqueExiste = true;
+                break;
+            }
+        }
+
+        if (!cliqueExiste) {
+            cliquesMaximaisGlobal.push_back(cliqueAtual);
+        }
+    }
+}
+
+void EncontrarCliquesMaximaisOpenMP(const std::vector<std::vector<int>>& grafo, int numVertices) {
+    #pragma omp parallel for
+    for (int i = 0; i < numVertices; ++i) {
+        std::vector<int> cliqueAtual;
+        EncontrarCliqueMaximalRecursivo(i, grafo, cliqueAtual);
+
+        // Verifica se a clique atual é maximal
+        bool ehMaximal = true;
+        for (const auto& clique : cliquesMaximaisGlobal) {
+            if (std::includes(clique.begin(), clique.end(), cliqueAtual.begin(), cliqueAtual.end())) {
+                ehMaximal = false;
+                break;
+            }
+        }
+
+        if (ehMaximal) {
+            // Adiciona a clique atual às cliques maximais globais
+            AdicionarCliqueMaximal(cliqueAtual);
+        }
+
+        // Atualiza a clique máxima global
+        #pragma omp critical
         {
-            while(!candidatos.empty() && !exitLoop) {
-                int v;
-                #pragma omp critical
-                {
-                    v = candidatos.back();
-                    candidatos.pop_back();
-                }
-
-                bool podeAdicionar = true;
-
-                #pragma omp parallel for
-                for(int u = 0; u < cliqueMaxima.size(); ++u) {
-                    if(grafo[cliqueMaxima[u]][v] == 0) {
-                        #pragma omp critical
-                        {
-                            podeAdicionar = false;
-                            exitLoop = 1;  // Set the exitLoop variable to terminate the outer loop
-                        }
-                    }
-                }
-
-                if(podeAdicionar) {
-                    #pragma omp critical
-                    {
-                        cliqueMaxima.push_back(v);
-                    }
-                    
-                    std::vector<int> novosCandidatos;
-
-                    #pragma omp parallel for
-                    for(int u = 0; u < candidatos.size(); ++u) {
-                        bool adjacenteATodos = true;
-
-                        for(int c : cliqueMaxima) {
-                            if(grafo[candidatos[u]][c] == 0) {
-                                adjacenteATodos = false;
-                                break;
-                            }
-                        }
-
-                        if(adjacenteATodos) {
-                            #pragma omp critical
-                            {
-                                novosCandidatos.push_back(candidatos[u]);
-                            }
-                        }
-                    }
-
-                    #pragma omp critical
-                    {
-                        candidatos = novosCandidatos;
-                    }
-                }
+            if (cliqueAtual.size() > cliqueMaximaGlobal.size()) {
+                cliqueMaximaGlobal = cliqueAtual;
             }
         }
     }
 
-    return cliqueMaxima;
+    // Ordena as cliques maximais globalmente com base no tamanho
+    #pragma omp barrier
+    #pragma omp single
+    std::sort(cliquesMaximaisGlobal.begin(), cliquesMaximaisGlobal.end(), ComparaCliques);
 }
 
-int main() {
-    int numVertices;
-    std::vector<std::vector<int>> grafo = LerGrafo("grafo.txt", numVertices);
-
-    auto start_time = std::chrono::high_resolution_clock::now();
-
-    std::vector<int> cliqueMaxima = encontrarCliqueMaxima(grafo, numVertices);
-
-    auto end_time = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed = end_time - start_time;
-
-    std::cout << "Clique máxima: ";
-    for(int v : cliqueMaxima) {
-        std::cout << v << " ";
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        std::cerr << "Uso: " << argv[0] << " <nome_do_arquivo_de_entrada>" << std::endl;
+        return 1;
     }
-    std::cout << std::endl;
 
-    std::cout << "Tempo de execução: " << elapsed.count() << "s" << std::endl;
+    // Nome do arquivo de entrada passado como argumento
+    std::string nome_arquivo_entrada = argv[1];
+
+    // Leitura do grafo
+    int numVertices;
+    std::vector<std::vector<int>> grafo = LerGrafo(nome_arquivo_entrada, numVertices);
+
+    // Executa a busca paralela usando OpenMP
+    EncontrarCliquesMaximaisOpenMP(grafo, numVertices);
+
+    // Saída do resultado
+    std::cout << "Cliques maximais encontradas:" << std::endl;
+    for (const auto& clique : cliquesMaximaisGlobal) {
+        std::cout << "[";
+        for (int i = 0; i < clique.size(); ++i) {
+            std::cout << clique[i] + 1;  // Ajuste para índices baseados em 1
+            if (i < clique.size() - 1) {
+                std::cout << ", ";
+            }
+        }
+        std::cout << "]" << std::endl;
+    }
+
+    std::cout << "Clique máxima encontrada:";
+    std::cout << "[";
+    for (int i = 0; i < cliqueMaximaGlobal.size(); ++i) {
+        std::cout << cliqueMaximaGlobal[i] + 1;  // Ajuste para índices baseados em 1
+        if (i < cliqueMaximaGlobal.size() - 1) {
+            std::cout << ", ";
+        }
+    }
+    std::cout << "]" << std::endl;
 
     return 0;
 }

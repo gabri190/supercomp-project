@@ -1,106 +1,94 @@
 #include <iostream>
 #include <vector>
-#include <fstream>
-#include <chrono>
-#include <set>
 #include <algorithm>
+#include "grafo.h"
 
-std::set<std::set<int>> encontrarCliquesMaximais(const std::vector<std::vector<int>>& grafo, int numVertices) {
-    std::set<std::set<int>> cliques;
-    std::set<int> candidatos;
-
-    for (int i = 0; i < numVertices; ++i) {
-        candidatos.insert(i);
+// Função para encontrar todas as cliques maximais usando busca exaustiva
+void BuscaExaustiva(const std::vector<std::vector<int>>& grafo, int numVertices, std::vector<int>& cliqueAtual, std::vector<std::vector<int>>& cliquesMaximais) {
+    // Verifica se a clique atual é maximal
+    bool ehMaximal = true;
+    for (int i : cliqueAtual) {
+        for (int j : cliqueAtual) {
+            if (i != j && grafo[i][j] == 0) {
+                ehMaximal = false;
+                break;
+            }
+        }
+        if (!ehMaximal) break;
     }
 
-    while (!candidatos.empty()) {
-        int v = *candidatos.begin();
-        std::set<int> cliqueAtual{v};
-        candidatos.erase(v);
+    if (ehMaximal) {
+        // Adiciona a clique atual às cliques maximais
+        cliquesMaximais.push_back(cliqueAtual);
+    }
 
-        auto candidatosRestantes = candidatos;
-        for (int u : candidatosRestantes) {
-            bool adjacenteATodos = true;
-
-            for (int c : cliqueAtual) {
-                if (grafo[u][c] == 0) {
-                    adjacenteATodos = false;
-                    break;
-                }
-            }
-
-            if (adjacenteATodos) {
-                cliqueAtual.insert(u);
+    // Estende a clique atual
+    for (int i = 0; i < numVertices; ++i) {
+        bool podeAdicionar = true;
+        for (int v : cliqueAtual) {
+            if (grafo[i][v] == 0) {
+                podeAdicionar = false;
+                break;
             }
         }
 
-        cliques.insert(cliqueAtual);
-        std::set<int> intersecao;
-        std::set_intersection(candidatos.begin(), candidatos.end(),
-                              cliqueAtual.begin(), cliqueAtual.end(),
-                              std::inserter(intersecao, intersecao.begin()));
-
-        candidatos = intersecao;
-    }
-
-    return cliques;
-}
-
-std::vector<std::vector<int>> LerGrafo(const std::string& filename, int& numVertices) {
-    std::ifstream file(filename);
-    if (!file.is_open()) {
-        std::cerr << "Error opening file: " << filename << std::endl;
-        exit(EXIT_FAILURE);
-    }
-
-    file >> numVertices;
-    std::vector<std::vector<int>> grafo(numVertices, std::vector<int>(numVertices, 0));
-
-    for (int i = 0; i < numVertices; ++i) {
-        for (int j = 0; j < numVertices; ++j) {
-            file >> grafo[i][j];
+        if (podeAdicionar) {
+            cliqueAtual.push_back(i);
+            BuscaExaustiva(grafo, numVertices, cliqueAtual, cliquesMaximais);
+            cliqueAtual.pop_back();  // Desfaz a adição para explorar outras possibilidades
         }
     }
-
-    return grafo;
 }
 
-int main() {
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        std::cerr << "Uso: " << argv[0] << " <nome_do_arquivo_de_entrada>" << std::endl;
+        return 1;
+    }
+
+    // Nome do arquivo de entrada passado como argumento
+    std::string nome_arquivo_entrada = argv[1];
+
+    // Leitura do grafo
     int numVertices;
-    std::vector<std::vector<int>> grafo = LerGrafo("grafo.txt", numVertices);
+    std::vector<std::vector<int>> grafo = LerGrafo(nome_arquivo_entrada, numVertices);
 
-    auto start = std::chrono::high_resolution_clock::now();
-    std::set<std::set<int>> cliquesMaximais = encontrarCliquesMaximais(grafo, numVertices);
-    auto end = std::chrono::high_resolution_clock::now();
+    // Inicialização da busca exaustiva
+    std::vector<int> cliqueAtual;
+    std::vector<std::vector<int>> cliquesMaximais;
 
-    std::chrono::duration<double> elapsed = end - start;
+    // Executa a busca exaustiva
+    BuscaExaustiva(grafo, numVertices, cliqueAtual, cliquesMaximais);
 
+    // Encontrar a clique máxima (a maior)
+    std::vector<int> clique_maxima = *std::max_element(cliquesMaximais.begin(), cliquesMaximais.end(), [](const std::vector<int>& a, const std::vector<int>& b) {
+        return a.size() < b.size();
+    });
+
+    // Saída do resultado
     std::cout << "Cliques maximais encontradas:" << std::endl;
-
     for (const auto& clique : cliquesMaximais) {
-        std::cout << '[';
-        for (auto v : clique) {
-            std::cout << v + 1 << ' '; // +1 to convert to 1-based indexing
+        std::cout << "[";
+        for (int i = 0; i < clique.size(); ++i) {
+            std::cout << clique[i] + 1;  // Ajuste para índices baseados em 1
+            if (i < clique.size() - 1) {
+                std::cout << ", ";
+            }
         }
-        std::cout << ']' << std::endl;
+        std::cout << "]" << std::endl;
     }
 
-    // Print the maximum clique
-    if (!cliquesMaximais.empty()) {
-        auto maxClique = *std::max_element(cliquesMaximais.begin(), cliquesMaximais.end(),
-                                           [](const auto& a, const auto& b) {
-                                               return a.size() < b.size();
-                                           });
-        std::cout << "Clique máxima encontrada: [";
-        for (auto v : maxClique) {
-            std::cout << v + 1 << ' '; // +1 to convert to 1-based indexing
+    std::cout << "Clique máxima encontrada:";
+    std::cout << "[";
+    for (int i = 0; i < clique_maxima.size(); ++i) {
+        std::cout << clique_maxima[i] + 1;  // Ajuste para índices baseados em 1
+        if (i < clique_maxima.size() - 1) {
+            std::cout << ", ";
         }
-        std::cout << ']' << std::endl;
-    } else {
-        std::cout << "Nenhuma clique encontrada." << std::endl;
     }
+    std::cout << "]" << std::endl;
 
-    std::cout << "Tempo de execução: " << elapsed.count() << "s" << std::endl;
+
 
     return 0;
 }
