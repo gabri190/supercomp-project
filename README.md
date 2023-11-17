@@ -106,3 +106,80 @@ Códigos-fonte de apoio
 3. Verificar (em Python) se seu programa encontrou a clique correta. Para isso, use a implementação abaixo, ela já está adaptada para ler nosso arquivo de input, ignorando a primeira linha.
  - Codigo disponível em verificacao.py
 
+### Como Compilar 
+
+#### exaustiva.cpp
+- compilação
+
+``` shell
+g++ -o exaustiva exaustiva.cpp
+
+```
+- gerando executavel
+```shell
+
+./busca_exaustiva
+```
+
+#### threads.cpp
+- compilação
+
+``` shell
+!g++ -o threads threads.cpp grafo.cpp -fopenmp
+
+```
+- gerando executavel
+```shell
+
+./threads
+```
+#### paralelizacao.cpp
+- a compilação e execucao serão feitas no cluster de cada grupo da disciplina
+
+Para os três casos serão discutidos os resultados a seguir na seção de resultados 
+para diferentes de grafos.
+
+### Resultados
+
+#### exaustiva
+
+- Grafo de 5 vértices:
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/3aba2896-be8a-4be5-94db-b97735188d2b)
+
+- Grafo de 10 vértices:
+
+  ![image](https://github.com/gabri190/supercomp-project/assets/72319195/e62f5be2-bff7-4f00-bc85-e752dad4dd13)
+
+- Grafo de 50 vértices:
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/b37dd0b1-2de7-499c-b58b-ef7974febfe1)
+
+- Grafo de 100 vértices
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/3800bf32-42a7-4267-a698-1e76e38b4f57)
+
+  
+#### threads
+
+- Grafo de 5 vértices:
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/53b8f62d-6670-497b-b9d6-1dc52581c7d8)
+
+- Grafo de 10 vértices:
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/7be12b76-a5f1-46f4-83e5-721572991292)
+
+- Grafo de 50 vértices:
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/6ffd03b5-f570-4eea-a413-339e9cfa5594)
+
+- Grafo de 100 vértices:
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/28dd6700-d615-43aa-ac79-7ab605db8b97)
+
+### Comparações em relação a speedups:
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/82146070-88a9-46e5-83f7-8444f2a866f0)
+
+
