@@ -112,13 +112,13 @@ Códigos-fonte de apoio
 - compilação
 
 ``` shell
-g++ -o exaustiva exaustiva.cpp grafo.cpp -std=c++11
+g++ -o exaustiva{id} exaustiva.cpp grafo.cpp -std=c++11
 
 ```
 - gerando executavel
 ```shell
 
-./exaustiva grafo.txt
+./exaustiva{id} grafo.txt
 ```
 Se quiser pode colocar numeros ao lado do nome exaustiva pra indicar o numero de vertices do grafo
 
@@ -126,15 +126,15 @@ Se quiser pode colocar numeros ao lado do nome exaustiva pra indicar o numero de
 - compilação
 
 ``` shell
-g++ -o threads5 threads.cpp grafo.cpp -fopenmp -O3
+g++ -o threads{id} threads.cpp grafo.cpp -fopenmp -O3
 
 ```
 - gerando executavel
 ```shell
 
-./threads grafo.txt
+./threads{id} grafo.txt
 ```
-Se quiser pode colocar numeros ao lado do nome exaustiva pra indicar o numero de vertices do grafo
+- Onde o id é o número de vértices do grafo que você pode alterar no input.py
 
 #### paralelizacao.cpp
 - a compilação e execucao serão feitas no cluster de cada grupo da disciplina
