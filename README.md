@@ -182,26 +182,26 @@ Para cada tamanho de grafo as primeiras imagens são o arquivo de verificação.
 
 - Grafo de 5 vértices:
 
-![image](https://github.com/gabri190/supercomp-project/assets/72319195/e99fe771-d7d7-4222-a050-93e3bc00291d)
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/95d6ceb4-7269-499d-ab04-b5ec15f44165)
 
 - Grafo de 10 vértices:
 
-![image](https://github.com/gabri190/supercomp-project/assets/72319195/79472aa9-9ee2-4325-8f1e-a61a18cbef8d)
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/88fd52b9-957c-42b4-bf6b-6451c80f6fae)
 
 - Grafo de 15 vértices:
 
-![image](https://github.com/gabri190/supercomp-project/assets/72319195/86cf3377-3fd2-4da0-b995-49e479c71e01)
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/f5de4c52-e704-4a06-93e5-d9932df29dc3)
 
 - Grafo de 20 vértices:
 
-![image](https://github.com/gabri190/supercomp-project/assets/72319195/1ede3473-cfd7-4f35-987b-35fe179f9ecd)
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/a2ccac2c-7ca2-4b16-beb1-ba065d49de8a)
 
 - Grafo de 25 vértices:
 
-![image](https://github.com/gabri190/supercomp-project/assets/72319195/cd30ed94-0b46-4aa2-84df-92e9fdc2858d)
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/8c880676-a9a1-4a2f-be89-4d6db30ddeb7)
 
 ### Comparações em relação a speedups:
 
-![image](https://github.com/gabri190/supercomp-project/assets/72319195/274cb1f9-f5ca-4cd8-9af5-337aba313b8b)
+![newplot](https://github.com/gabri190/supercomp-project/assets/72319195/add491f3-a001-48fc-8238-0d968fb8142f)
 
 
