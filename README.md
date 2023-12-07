@@ -279,3 +279,5 @@ No primeiro o tempo foi parecido mas o OpenMp ja devia ser mais rápido o que ac
 ![newplot](https://github.com/gabri190/supercomp-project/assets/72319195/5511cbb4-7019-418e-9deb-1f42a22c28b5)
 
 No segundo caso e muito rápido o MPI e por isso praticamente impercepitível em relação a tempo.
+
+O código disponível em script.py roda o primeiro gráfico e o segundo foram feitos ajustes a fim de comparar a busca_exaustiva ao codigo em MPI.
