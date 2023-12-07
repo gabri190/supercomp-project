@@ -139,6 +139,35 @@ g++ -o threads{id} threads.cpp grafo.cpp -fopenmp -O3
 #### paralelizacao.cpp
 - a compilação e execucao serão feitas no cluster de cada grupo da disciplina
 
+- compilação
+
+``` shell
+mpic++ paralelizacao.cpp -o mpi{id} 
+
+```
+- submetendo job
+
+```shell
+sbatch paralel.slurm
+```
+- pegando output
+
+```shell
+cat slurm-{jobid}.out
+```
+
+Não esquece de criar um arquivo.slurm e modificar o executavel como no exemplo a seguir:
+
+```shell
+#!/bin/bash
+#SBATCH --job-name=projeto_gabriel
+#SBATCH --nodes=1
+#SBATCH --partition=express
+#SBATCH --mem=500M
+echo Output do Job $SLURM_JOB_ID
+./executavel
+```
+
 Para os três casos serão discutidos os resultados a seguir na seção de resultados 
 para diferentes de grafos.
 
@@ -199,6 +228,43 @@ Para cada tamanho de grafo as primeiras imagens são o arquivo de verificação.
 - Grafo de 25 vértices:
 
 ![image](https://github.com/gabri190/supercomp-project/assets/72319195/8c880676-a9a1-4a2f-be89-4d6db30ddeb7)
+
+### MPI-paralelizacao
+
+Para cada tamanho de grafo com os vértices a primeira imagem e a clique máxima da busca_exaustiva(serial) e a 
+segunda imagem e a paralelização MPI com o tempo da execução
+
+- Grafo de 5 vértices:
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/1139471c-83bf-4adb-84c1-5f03ad65850f)
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/a55b4dd0-209e-4dda-95c8-347b3442be27)
+
+- Grafo de 10 vértices:
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/10a3867c-0d77-4608-805f-6a960de93314)
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/4a4470ae-3644-44df-99e7-3eb9c434de81)
+
+
+- Grafo de 15 vértices:
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/7cf2dc01-f7e3-449f-a929-c621d84d176b)
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/3f3e3582-468a-4622-8b17-168ffeb2acdd)
+
+- Grafo de 20 vértices
+  
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/b7aa8327-fa5d-4583-abab-9cf3dcc49b93)
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/b7273af2-5ae6-45fb-8191-00204b6f4265)
+
+- Grafo de 25 vértices
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/a439ceef-f7e5-4446-8777-44c5cbc5a640)
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/10d639f0-918c-4363-a8b8-b6209adbb7dd)
+  
 
 ### Comparações em relação a speedups:
 
