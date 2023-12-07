@@ -268,6 +268,14 @@ segunda imagem e a paralelização MPI com o tempo da execução
 
 ### Comparações em relação a speedups:
 
+- Serial e OpenMp
+
 ![newplot](https://github.com/gabri190/supercomp-project/assets/72319195/add491f3-a001-48fc-8238-0d968fb8142f)
 
+No primeiro o tempo foi parecido mas o OpenMp ja devia ser mais rápido o que aconteceu para alguns vértices
 
+- Serial e MPI
+ 
+![newplot](https://github.com/gabri190/supercomp-project/assets/72319195/5511cbb4-7019-418e-9deb-1f42a22c28b5)
+
+No segundo caso e muito rápido o MPI e por isso praticamente impercepitível em relação a tempo.
