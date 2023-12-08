@@ -314,4 +314,4 @@ No primeiro o tempo foi parecido mas o OpenMp ja devia ser mais rápido o que ac
 
 No segundo caso é muito rápido o tempo de execução do MPI e por isso praticamente imperceptível em relação a tempo.
 
-O código disponível em script.py roda o primeiro gráfico e o segundo foram feitos ajustes a fim de comparar a busca_exaustiva ao codigo em MPI.
+O código disponível em script.py roda o primeiro gráfico e os codigos speedups_MPI.py e speedups_MPI_hard_coded.py rodam a relação do e MPI com a busca exaustiva mostrando a grande disparidade de tempos.
