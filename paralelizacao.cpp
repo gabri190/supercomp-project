@@ -6,7 +6,7 @@
 
 #include <mpi.h>
 #include <fstream>
-#include "grafo.h"  // Supõe-se que você tenha um arquivo grafo.h com a definição da função LerGrafo
+#include "grafo.h"  
 #include <iostream>
 #include <vector>
 #include <chrono>
