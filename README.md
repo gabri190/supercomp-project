@@ -204,8 +204,27 @@ para diferentes de grafos.
 ![image](https://github.com/gabri190/supercomp-project/assets/72319195/c607947b-8427-40c9-ae02-3d07ee811b0b)
 
 ![image](https://github.com/gabri190/supercomp-project/assets/72319195/ed536218-df46-41ea-9f6f-895448d5df8d)
-  
-Para cada tamanho de grafo as primeiras imagens são o arquivo de verificação.py e as imagens subquentes são o resultado do arquivo exaustiva.cpp 
+
+- grafo de 30 vértices (houve mudança nas arestas a partir daqui)
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/e8d73d8f-ea06-4602-ae83-84af277a23f7)
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/a2078bfa-bc1e-4557-aa77-af6ece0dbae6)
+
+- grafo de 35 vértices
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/53f6b29c-2e8a-4883-a341-76e6a2714b63)
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/13e09f80-c88f-4dc4-b9cf-c976a70d79c9)
+
+- grafo 50 vértices
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/ae5e667f-ff3b-4974-82ac-0e056a03a1bb)
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/745c0881-c51b-4a18-8609-aaa014ff5975)
+
+
+Para cada tamanho de grafo as primeiras imagens são o arquivo de verificação.py (arquivo dado no projeto que verifica o tamanho e as cliques máximas do grafo) e as imagens subquentes são o resultado do arquivo exaustiva.cpp 
 
 #### threads
 
@@ -228,6 +247,12 @@ Para cada tamanho de grafo as primeiras imagens são o arquivo de verificação.
 - Grafo de 25 vértices:
 
 ![image](https://github.com/gabri190/supercomp-project/assets/72319195/8c880676-a9a1-4a2f-be89-4d6db30ddeb7)
+
+- Grafo de 50 vértices:
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/ea07c04e-c05e-47e7-bee3-d82e07573bef)
+
+
 
 ### MPI-paralelizacao
 
