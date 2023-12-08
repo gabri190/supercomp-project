@@ -156,7 +156,7 @@ sbatch paralel.slurm
 cat slurm-{jobid}.out
 ```
 
-Não esquece de criar um arquivo.slurm e modificar o executavel como no exemplo a seguir:
+Não esquecer de criar um arquivo.slurm e modificar o executavel como no exemplo a seguir:
 
 ```shell
 #!/bin/bash
@@ -264,7 +264,36 @@ segunda imagem e a paralelização MPI com o tempo da execução
 ![image](https://github.com/gabri190/supercomp-project/assets/72319195/a439ceef-f7e5-4446-8777-44c5cbc5a640)
 
 ![image](https://github.com/gabri190/supercomp-project/assets/72319195/10d639f0-918c-4363-a8b8-b6209adbb7dd)
-  
+
+### Cliques máximas MPI a partir de grafos com 30 vertices
+
+A partir daqui a busca exaustiva começa a falhar e mostraremos apenas o MPI 
+
+- grafo 30 vértices
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/32ce42d5-ed72-4a91-82e3-9d2f131c4827)
+
+- grafo 50 vértices
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/6e6c8742-223f-4a60-bc41-a993c2086332)
+
+- grafo 75 vértices
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/906b55ab-9e19-4e4a-af72-807be4eea915)
+
+- grafo 100 vértices
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/e69d0000-4f16-49e8-8a19-6e794386f18f)
+
+- grafo 200 vértices
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/b058e4a7-8951-4535-89f3-a3a406317987)
+
+- grafo 500 vértices
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/4e282351-c071-4090-abc1-921e621610a3)
+
+Podemos repetir para outros isso para valores acima de 500 mas o MPi vai começar a falhar um pouco.Logo, o poder computacional para retornar uma solução do MPI em relação as outras abordagens, principalmente a heurística, e bem maior.
 
 ### Comparações em relação a speedups:
 
@@ -274,10 +303,15 @@ segunda imagem e a paralelização MPI com o tempo da execução
 
 No primeiro o tempo foi parecido mas o OpenMp ja devia ser mais rápido o que aconteceu para alguns vértices
 
-- Serial e MPI
+- Serial e MPI pelos tempos coletados pelos executáveis
  
 ![newplot](https://github.com/gabri190/supercomp-project/assets/72319195/5511cbb4-7019-418e-9deb-1f42a22c28b5)
 
-No segundo caso e muito rápido o MPI e por isso praticamente impercepitível em relação a tempo.
+- Serial e MPI pelos tempos coletados via print
+
+![image](https://github.com/gabri190/supercomp-project/assets/72319195/a827d0a6-2b1e-4cea-9880-9a6396cf1dad)
+
+
+No segundo caso é muito rápido o tempo de execução do MPI e por isso praticamente imperceptível em relação a tempo.
 
 O código disponível em script.py roda o primeiro gráfico e o segundo foram feitos ajustes a fim de comparar a busca_exaustiva ao codigo em MPI.
