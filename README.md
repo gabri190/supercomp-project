@@ -256,7 +256,7 @@ Para cada tamanho de grafo as primeiras imagens são o arquivo de verificação.
 
 ### MPI-paralelizacao
 
-Para cada tamanho de grafo com os vértices a primeira imagem e a clique máxima da busca_exaustiva(serial) e a 
+Para cada tamanho de grafo com os vértices a primeira imagem e a clique máxima da busca_exaustiva (serial) e a 
 segunda imagem e a paralelização MPI com o tempo da execução
 
 - Grafo de 5 vértices:
@@ -291,8 +291,6 @@ segunda imagem e a paralelização MPI com o tempo da execução
 ![image](https://github.com/gabri190/supercomp-project/assets/72319195/10d639f0-918c-4363-a8b8-b6209adbb7dd)
 
 ### Cliques máximas MPI a partir de grafos com 30 vertices
-
-A partir daqui a busca exaustiva começa a falhar e mostraremos apenas o MPI 
 
 - grafo 30 vértices
 
