@@ -1,3 +1,4 @@
+## codigo considerando o tempo dos executaveis gerados até 25 vértices (MPI e heurística)
 import matplotlib.pyplot as plt
 import subprocess
 import time
