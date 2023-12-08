@@ -108,7 +108,7 @@ Códigos-fonte de apoio
 
 ### Como Compilar 
 
-#### exaustiva.cpp
+#### exaustiva.cpp (heuristica da busca_exasustiva)
 - compilação
 
 ``` shell
@@ -173,7 +173,7 @@ para diferentes de grafos.
 
 ### Resultados
 
-#### exaustiva
+#### exaustiva (heuristica da busca_exaustiva)
 
 - Grafo de 5 vértices:
 
@@ -297,17 +297,17 @@ Podemos repetir para outros isso para valores acima de 500 mas o MPi vai começa
 
 ### Comparações em relação a speedups:
 
-- Serial e OpenMp
+- heuristica da busca_exaustiva (nome serial no gráfico foi uma pequena confusão) e OpenMp
 
 ![newplot](https://github.com/gabri190/supercomp-project/assets/72319195/add491f3-a001-48fc-8238-0d968fb8142f)
 
 No primeiro o tempo foi parecido mas o OpenMp ja devia ser mais rápido o que aconteceu para alguns vértices
 
-- Serial e MPI pelos tempos coletados pelos executáveis
+- heuristica da busca_exaustiva (exaustiva no gráfico) e MPI pelos tempos coletados pelos executáveis
  
 ![newplot](https://github.com/gabri190/supercomp-project/assets/72319195/5511cbb4-7019-418e-9deb-1f42a22c28b5)
 
-- Serial e MPI pelos tempos coletados via print
+- heuristica da busca_exaustiva(está como serial no gráfico) e MPI pelos tempos coletados via print
 
 ![image](https://github.com/gabri190/supercomp-project/assets/72319195/a827d0a6-2b1e-4cea-9880-9a6396cf1dad)
 
