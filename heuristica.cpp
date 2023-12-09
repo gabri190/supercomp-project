@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <chrono>  // Adicionando a biblioteca de tempo
 #include "grafo.h"
 
 // Função para encontrar todas as cliques maximais usando busca exaustiva
@@ -57,8 +58,15 @@ int main(int argc, char* argv[]) {
     std::vector<int> cliqueAtual;
     std::vector<std::vector<int>> cliquesMaximais;
 
+    // Medição de tempo: Início
+    auto start_time = std::chrono::high_resolution_clock::now();
+
     // Executa a busca exaustiva
     BuscaExaustiva(grafo, numVertices, cliqueAtual, cliquesMaximais);
+
+    // Medição de tempo: Fim
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
 
     // Encontrar a clique máxima (a maior)
     std::vector<int> clique_maxima = *std::max_element(cliquesMaximais.begin(), cliquesMaximais.end(), [](const std::vector<int>& a, const std::vector<int>& b) {
@@ -88,7 +96,8 @@ int main(int argc, char* argv[]) {
     }
     std::cout << "]" << std::endl;
 
-
+    // Saída do tempo de execução
+    std::cout << "Tempo de execução: " << duration.count() << " microseconds" << std::endl;
 
     return 0;
 }
