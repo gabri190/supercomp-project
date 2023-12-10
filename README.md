@@ -108,7 +108,7 @@ Códigos-fonte de apoio
 
 ### Como Compilar 
 
-#### exaustiva.cpp (heuristica da busca_exasustiva)
+#### exaustiva.cpp
 - compilação
 
 ``` shell
