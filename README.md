@@ -167,13 +167,14 @@ Não esquecer de criar um arquivo.slurm e modificar o executavel como no exemplo
 echo Output do Job $SLURM_JOB_ID
 ./executavel
 ```
+Os executáveis da busca_exaustiva e do MPI até grafos de 25 vértices estão na pasta executaveis.
 
 Para os três casos serão discutidos os resultados a seguir na seção de resultados 
 para diferentes de grafos.
 
 ### Resultados
 
-#### heuristica (heuristica da busca_exaustiva)
+#### Busca_exaustiva
 
 - Grafo de 5 vértices:
 
