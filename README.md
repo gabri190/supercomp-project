@@ -121,28 +121,6 @@ g++ -o exaustiva{id} exaustiva.cpp grafo.cpp -std=c++11
 ./exaustiva{id} grafo.txt
 ```
 Se quiser pode colocar numeros ao lado do nome exaustiva pra indicar o numero de vertices do grafo
-Essa aqui não precisa para as comparações faremos a comparação a partir da heuristica
-
-#### heuristica.cpp (heuristica da busca_exasustiva)
-- compilação
-
-``` shell
-# no colab
-g++ -o heuristica{id} heuristica.cpp grafo.cpp -std=c++11
-
-```
-
-``` shell
-# no cluster
-g++ heuristica.cpp -o heuristica{id}
-
-```
-- gerando executavel
-```shell
-
-./heuristica{id} grafo.txt
-```
-Se quiser pode colocar numeros ao lado do nome heuristica pra indicar o numero de vertices (id) do grafo
 
 #### threads.cpp
 - compilação
@@ -246,7 +224,7 @@ para diferentes de grafos.
 ![image](https://github.com/gabri190/supercomp-project/assets/72319195/745c0881-c51b-4a18-8609-aaa014ff5975)
 
 
-Para cada tamanho de grafo as primeiras imagens são o arquivo de verificação.py (arquivo dado no projeto que verifica o tamanho e as cliques máximas do grafo) e as imagens subquentes são o resultado do arquivo heuristica.cpp 
+Para cada tamanho de grafo as primeiras imagens são o arquivo de verificação.py (arquivo dado no projeto que verifica o tamanho e as cliques máximas do grafo) e as imagens subquentes são o resultado do arquivo exaustiva.cpp 
 
 #### THREADS (OPENMP)
 
@@ -278,7 +256,7 @@ Para cada tamanho de grafo as primeiras imagens são o arquivo de verificação.
 
 ### MPI-paralelizacao
 
-Para cada tamanho de grafo com os vértices a primeira imagem e a clique máxima da heuristica e a 
+Para cada tamanho de grafo com os vértices a primeira imagem e a clique máxima da exaustiva e a 
 segunda imagem é a paralelização MPI com o tempo da execução
 
 - Grafo de 5 vértices:
@@ -342,18 +320,18 @@ Podemos repetir para outros isso para valores acima de 500 mas o MPi vai começa
 
 ### Comparações em relação a speedups:
 
-- heuristica da busca_exaustiva (nome serial no gráfico foi uma pequena confusão) e OpenMp
+busca_exaustiva (nome serial no gráfico ) e OpenMp
 
 ![newplot](https://github.com/gabri190/supercomp-project/assets/72319195/add491f3-a001-48fc-8238-0d968fb8142f)
 
 No primeiro o tempo foi parecido mas o OpenMp ja devia ser mais rápido o que aconteceu para alguns vértices.
 A disparidade de desempenho observada em alguns casos entre a execução sequencial e paralela com OpenMP pode ser atribuída a desafios específicos relacionados à natureza dos dados e ao padrão de acesso a esses dados. Em determinados vértices, a paralelização pode introduzir overheads adicionais, como contenção de recursos compartilhados ou desequilíbrio de carga, que neutralizam os benefícios potenciais da execução paralela. Estes casos particulares podem exigir uma análise mais profunda e ajustes específicos na implementação paralela para otimizar a distribuição de tarefas e mitigar possíveis gargalos, destacando a complexidade intrínseca da paralelização em cenários específicos.
 
-- heuristica da busca_exaustiva (exaustiva no gráfico) e MPI pelos tempos coletados pelos executáveis
+- busca_exaustiva (exaustiva no gráfico) e MPI pelos tempos coletados pelos executáveis
  
 ![newplot](https://github.com/gabri190/supercomp-project/assets/72319195/5511cbb4-7019-418e-9deb-1f42a22c28b5)
 
-- heuristica da busca_exaustiva (está como serial no gráfico foi feita uma pequena confusão aqui também em relação a nomes) e MPI pelos tempos coletados via print
+- busca_exaustiva (está como serial no gráfico foi feita uma pequena confusão aqui em relação a nomes) e MPI pelos tempos coletados via print
 
 ![image](https://github.com/gabri190/supercomp-project/assets/72319195/a827d0a6-2b1e-4cea-9880-9a6396cf1dad)
 
@@ -364,7 +342,7 @@ O código disponível em script.py roda o primeiro gráfico e os codigos speedup
 
 ### Conclusão
 
-O MPI em relação à heurística resultou em melhorias significativas no tempo de execução, como evidenciado pelo gráfico de desempenho. 
+O MPI em relação à exaustiva resultou em melhorias significativas no tempo de execução, como evidenciado pelo gráfico de desempenho. 
 O MPI facilitou a distribuição eficiente de tarefas entre diferentes nós de processamento, permitindo a execução simultânea em várias instâncias. Esse paralelismo distribuído revelou-se particularmente eficaz em cenários onde a heurística envolve a avaliação de múltiplos estados independentes. 
 A capacidade do MPI em coordenar a comunicação entre os processos, em conjunto com a execução simultânea, levou a uma redução substancial no tempo total de processamento. 
-Este resultado destaca a sinergia eficaz entre a heurística e a abordagem de programação paralela proporcionada pelo MPI, fortalecendo a escalabilidade e o desempenho global do algoritmo em questão
+Este resultado destaca a sinergia eficaz entre a exaustiva e a abordagem de programação paralela proporcionada pelo MPI, fortalecendo a escalabilidade e o desempenho global do algoritmo em questão
